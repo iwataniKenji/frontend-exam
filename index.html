@@ -32,8 +32,31 @@
           <div class="dialog-window">
             <div class="dialog">
               <h2>Dialog</h2>
-              <p>Content</p>
-              <button class="close-button">Fechar</button>
+              <form class="form">
+                <label for="title">Título:</label>
+                <input
+                  type="text"
+                  class="title text-field"
+                  name="title"
+                  placeholder="Digite um título"
+                />
+
+                <label for="date">Data:</label>
+                <input type="date" class="date text-field" name="date" />
+
+                <label for="content">Conteúdo:</label>
+                <textarea
+                  class="content text-field"
+                  name="content"
+                  placeholder="Digite o conteúdo"
+                ></textarea>
+
+                <div>
+                  <button class="close-button" type="button">Fechar</button>
+
+                  <input class="submit-button" type="submit" value="Enviar" />
+                </div>
+              </form>
             </div>
           </div>
 
@@ -46,36 +69,33 @@
           </div>
         </div>
       </div>
-      <div class="content"></div>
-
-      <div class="posts-bg">
+      <div class="posts-list">
         <div class="post">
-          <h2>Cool post</h2>
-          <p class="date">MAY 24, 2010</p>
-          <p class="info">Very cool information...</p>
-        </div>
-        <div class="post">
-          <h2>Cool post</h2>
-          <p class="date">MAY 24, 2010</p>
+          <h2 class="post-title">Cool post</h2>
+          <p class="post-date">MAY 24, 2010</p>
           <p class="info">Very cool information...</p>
         </div>
       </div>
     </div>
     <script>
+      // MENU
       const menu = document.querySelector(".menu");
       const menuButton = document.querySelector(".menu-button");
       const menuItems = document.querySelector(".menu-items");
       const addButton = menuItems.querySelector(".add-button");
       const searchButton = menuItems.querySelector(".search-button");
 
-      const closeDialogButton = document.querySelector(".close-button");
+      // POSTS
+      const postsBg = document.querySelector(".posts-bg");
+
+      // DIALOG
       const dialogWindow = document.querySelector(".dialog-window");
+      const closeDialogButton = document.querySelector(".close-button");
 
-      menuButton.addEventListener("click", toggleMenu);
-      addButton.addEventListener("click", onAddButtonClick);
-      searchButton.addEventListener("click", onSearchButtonClick);
-      closeDialogButton.addEventListener("click", onDialogClose);
+      // FORM
+      const form = document.querySelector(".form");
 
+      // FUNCTIONS
       function toggleMenu() {
         menuItems.classList.toggle("show");
       }
@@ -93,6 +113,40 @@
       function onDialogClose() {
         dialogWindow.style.display = "none";
       }
+
+      function submitForm(event) {
+        event.preventDefault();
+
+        const title = document.querySelector(".title").value;
+        const date = document.querySelector(".date").value;
+        const content = document.querySelector(".content").value;
+        const postList = document.querySelector(".posts-list");
+
+        const timestamp = new Date().getTime();
+        const post = document.createElement("div");
+
+        post.classList.add("post");
+        post.id = `${timestamp}`;
+        post.innerHTML = `
+          <h2 class="post-title">${title}</h2>
+          <p class="post-date">${date}</p>
+          <p class="info">${content}</p>
+        `;
+
+        postList.appendChild(post);
+
+        alert("Formulário enviado com sucesso!");
+        form.reset();
+
+        dialogWindow.style.display = "none";
+      }
+
+      // EVENT LISTENERS
+      menuButton.addEventListener("click", toggleMenu);
+      addButton.addEventListener("click", onAddButtonClick);
+      searchButton.addEventListener("click", onSearchButtonClick);
+      closeDialogButton.addEventListener("click", onDialogClose);
+      form.addEventListener("submit", submitForm);
     </script>
   </body>
 </html>
