@@ -15,15 +15,27 @@
     />
 
     <link rel="stylesheet" type="text/css" media="screen" href="styles.css" />
-
-    <script src="main.js"></script>
   </head>
   <body>
     <div class="full-page">
       <div class="main-bg">
         <div class="main">
           <h1>Some webpage</h1>
-          <button class="menu">☰ Menu</button>
+          <div class="menu">
+            <button class="menu-button">☰ Menu</button>
+            <ul class="menu-items">
+              <li class="add-button">Adicionar</li>
+              <li class="search-button">Pesquisar</li>
+            </ul>
+          </div>
+
+          <div class="dialog-window">
+            <div class="dialog">
+              <h2>Dialog</h2>
+              <p>Content</p>
+              <button class="close-button">Fechar</button>
+            </div>
+          </div>
 
           <div class="icons-section">
             <img src="./assets/icons8-facebook.svg" alt="facebook logo" />
@@ -34,6 +46,8 @@
           </div>
         </div>
       </div>
+      <div class="content"></div>
+
       <div class="posts-bg">
         <div class="post">
           <h2>Cool post</h2>
@@ -47,5 +61,38 @@
         </div>
       </div>
     </div>
+    <script>
+      const menu = document.querySelector(".menu");
+      const menuButton = document.querySelector(".menu-button");
+      const menuItems = document.querySelector(".menu-items");
+      const addButton = menuItems.querySelector(".add-button");
+      const searchButton = menuItems.querySelector(".search-button");
+
+      const closeDialogButton = document.querySelector(".close-button");
+      const dialogWindow = document.querySelector(".dialog-window");
+
+      menuButton.addEventListener("click", toggleMenu);
+      addButton.addEventListener("click", onAddButtonClick);
+      searchButton.addEventListener("click", onSearchButtonClick);
+      closeDialogButton.addEventListener("click", onDialogClose);
+
+      function toggleMenu() {
+        menuItems.classList.toggle("show");
+      }
+
+      function onAddButtonClick() {
+        console.log("Clicou em addButton");
+        dialogWindow.style.display = "block";
+      }
+
+      function onSearchButtonClick() {
+        console.log("Clicou em searchButton");
+        dialogWindow.style.display = "block";
+      }
+
+      function onDialogClose() {
+        dialogWindow.style.display = "none";
+      }
+    </script>
   </body>
 </html>
