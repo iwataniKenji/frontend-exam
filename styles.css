@@ -137,17 +137,6 @@ body {
   gap: 10px;
 }
 
-.content {
-  margin-top: 20px;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  resize: none;
-}
-
-.submit-button {
-}
-
 /***********
  QUERIES
 ***********/
