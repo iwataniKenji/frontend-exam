@@ -71,28 +71,28 @@
       <div class="posts-list"></div>
     </div>
     <script>
-      // POSTS
       let posts = [
         {
           id: "1",
-          title: "Cool post",
-          date: "MAY 24, 2010",
+          title: "Title #1",
+          date: new Date("2021-10-10"),
           content: "Very cool information...",
         },
         {
           id: "2",
-          title: "Cool post",
-          date: "MAY 24, 2010",
+          title: "Title #2",
+          date: new Date("2021-10-10"),
           content: "Very cool information...",
         },
         {
           id: "3",
-          title: "Cool post",
-          date: "MAY 24, 2010",
+          title: "Title #3",
+          date: new Date("2021-10-10"),
           content: "Very cool information...",
         },
       ];
 
+      // POSTS
       const postList = document.querySelector(".posts-list");
 
       // MENU
@@ -108,8 +108,6 @@
 
       // FORM
       const form = document.querySelector(".form");
-
-      renderPostsList(posts);
 
       // FUNCTIONS
       function toggleMenu() {
@@ -137,10 +135,12 @@
         const date = document.querySelector(".date").value;
         const content = document.querySelector(".content").value;
 
+        console.log("date".date);
+
         posts.push({
           id: posts.length + 1,
           title: title,
-          date: date,
+          date: date ? new Date(date) : new Date(), // TODO -> substituir por validação
           content: content,
         });
 
@@ -167,7 +167,7 @@
 
           const date = document.createElement("p");
           date.classList.add("post-date");
-          date.textContent = post.date;
+          date.textContent = post.date.toLocaleDateString("pt-BR");
           postItem.appendChild(date);
 
           const content = document.createElement("p");
@@ -175,9 +175,33 @@
           content.textContent = post.content;
           postItem.appendChild(content);
 
+          const deleteButton = document.createElement("button");
+          deleteButton.textContent = "Deletar";
+          deleteButton.addEventListener("click", () =>
+            deleteById(posts.indexOf(post))
+          );
+          postItem.appendChild(deleteButton);
+
           postList.appendChild(postItem);
         });
       }
+
+      function findByNameOrDate() {
+        const search = document.querySelector(".search").value;
+
+        const filteredPosts = posts.filter((post) => {
+          return post.title.includes(search) || post.date.includes(search);
+        });
+
+        renderPostsList(filteredPosts);
+      }
+
+      function deleteById(index) {
+        posts.splice(index, 1);
+        renderPostsList(posts);
+      }
+
+      renderPostsList(posts);
 
       // EVENT LISTENERS
       menuButton.addEventListener("click", toggleMenu);
