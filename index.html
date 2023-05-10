@@ -43,17 +43,19 @@
                 <label for="date">Data:</label>
                 <input type="date" class="date text-field" name="date" />
 
-                <label for="content">Conteúdo:</label>
+                <label for="content" class="content-label">Conteúdo:</label>
                 <textarea
                   class="content text-field"
                   name="content"
                   placeholder="Digite o conteúdo"
                 ></textarea>
 
-                <div>
+                <div class="buttons-container">
                   <button class="close-button" type="button">Fechar</button>
 
                   <input class="submit-button" type="submit" value="Enviar" />
+
+                  <button class="find-button" type="button">Pesquisar</button>
                 </div>
 
                 <p class="error-message"></p>
@@ -106,8 +108,16 @@
       // DIALOG
       const dialogWindowEl = document.querySelector(".dialog-window");
       const formEl = document.querySelector(".form");
+      const contentLabelEl = document.querySelector(".content-label");
+      const contentFieldEl = document.querySelector(".content");
       const closeDialogButtonEl = document.querySelector(".close-button");
+      const submitButtonEl = document.querySelector(".submit-button");
+      const findButtonEl = document.querySelector(".find-button");
       const errorMessageEl = document.querySelector(".error-message");
+
+      const titleEl = document.querySelector(".title");
+      const dateEl = document.querySelector(".date");
+      const contentEl = document.querySelector(".content");
 
       // FUNCTIONS
       function toggleMenu() {
@@ -115,11 +125,18 @@
       }
 
       function onAddButtonClick() {
+        contentLabelEl.style.display = "block";
+        contentFieldEl.style.display = "block";
+        submitButtonEl.style.display = "block";
+        findButtonEl.style.display = "none";
         dialogWindowEl.style.display = "block";
       }
 
       function onSearchButtonClick() {
-        console.log("Clicou em searchButtonEl"); // TODO -> implement
+        contentLabelEl.style.display = "none";
+        contentFieldEl.style.display = "none";
+        submitButtonEl.style.display = "none";
+        findButtonEl.style.display = "block";
         dialogWindowEl.style.display = "block";
       }
 
@@ -127,23 +144,68 @@
         dialogWindowEl.style.display = "none";
       }
 
+      function onFindPost() {
+        const searchTitle = titleEl.value
+          ? titleEl.value.trim().toLowerCase()
+          : "";
+        const searchDate = dateEl.value
+          ? new Date(dateEl.value).toLocaleDateString()
+          : "";
+
+        const filteredPosts = posts.filter((post) => {
+          const postTitle = post.title.toLowerCase();
+          const postDate = new Date(post.date).toLocaleDateString();
+
+          return postTitle.includes(searchTitle) || postDate === searchDate;
+        });
+
+        console.log("filteredPosts", filteredPosts);
+
+        postListEl.innerHTML = "";
+
+        if (filteredPosts.length === 0) {
+          postListEl.innerHTML = "<p>Nenhuma postagem encontrada.</p>";
+        } else {
+          filteredPosts.forEach((post) => {
+            const postElement = document.createElement("div");
+            const deleteButton = document.createElement("button");
+            const dateValue = new Date(post.date).toLocaleDateString();
+
+            postElement.classList.add("post");
+            postElement.innerHTML = `
+              <h2 class="post-title">${post.title}</h2>
+              <p class="post-date">${dateValue}</p>
+              <p class="post-content">${post.content}</p>
+            `;
+
+            deleteButton.textContent = "Deletar";
+            deleteButton.addEventListener("click", () =>
+              deleteById(posts.indexOf(post))
+            );
+            postElement.appendChild(deleteButton);
+
+            postListEl.appendChild(postElement);
+          });
+        }
+
+        formEl.reset();
+
+        onDialogClose();
+      }
+
       function submitForm(event) {
         event.preventDefault();
 
-        const title = document.querySelector(".title");
-        const date = document.querySelector(".date");
-        const content = document.querySelector(".content");
-
-        const isValid = doFormValidation(title, date, content);
+        const isValid = doFormValidation(titleEl, dateEl, contentEl);
 
         if (isValid) {
           const lastPostId = getLastPostIdNumber() + 1;
 
           posts.push({
             id: lastPostId.toString(),
-            title: title.value,
-            date: new Date(date.value),
-            content: content.value,
+            title: titleEl.value,
+            date: new Date(dateEl.value),
+            content: contentEl.value,
           });
 
           renderPostsList(posts);
@@ -224,16 +286,6 @@
         });
       }
 
-      function findByNameOrDate() {
-        const search = document.querySelector(".search").value;
-
-        const filteredPosts = posts.filter((post) => {
-          return post.title.includes(search) || post.date.includes(search);
-        });
-
-        renderPostsList(filteredPosts);
-      }
-
       function deleteById(index) {
         posts.splice(index, 1);
         renderPostsList(posts);
@@ -247,6 +299,7 @@
       searchButtonEl.addEventListener("click", onSearchButtonClick);
       closeDialogButtonEl.addEventListener("click", onDialogClose);
       formEl.addEventListener("submit", submitForm);
+      findButtonEl.addEventListener("click", onFindPost);
     </script>
   </body>
 </html>

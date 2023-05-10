@@ -137,6 +137,12 @@ body {
   gap: 10px;
 }
 
+.buttons-container {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
 .error-message {
   color: red;
 }
