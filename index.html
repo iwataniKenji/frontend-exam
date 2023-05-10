@@ -75,26 +75,24 @@
       <div class="posts-list"></div>
     </div>
     <script>
-      let posts = [
-        {
-          id: "1",
-          title: "Title #1",
-          date: new Date("2021-10-10"),
-          content: "Very cool information...",
-        },
-        {
-          id: "2",
-          title: "Title #2",
-          date: new Date("2021-10-10"),
-          content: "Very cool information...",
-        },
-        {
-          id: "3",
-          title: "Title #3",
-          date: new Date("2021-10-10"),
-          content: "Very cool information...",
-        },
-      ];
+      let posts;
+
+      if (localStorage.getItem("posts")) {
+        const parsedArray = JSON.parse(localStorage.getItem("posts"));
+
+        posts = parsedArray.map((post) => {
+          return {
+            id: post.id,
+            title: post.title,
+            date: new Date(post.date),
+            content: post.content,
+          };
+        });
+      } else {
+        posts = [];
+      }
+
+      console.log("posts", posts);
 
       // POSTS
       const postListEl = document.querySelector(".posts-list");
@@ -105,19 +103,21 @@
       const addButtonEl = menuItemsEl.querySelector(".add-button");
       const searchButtonEl = menuItemsEl.querySelector(".search-button");
 
-      // DIALOG
+      // DIALOG FORM
       const dialogWindowEl = document.querySelector(".dialog-window");
       const formEl = document.querySelector(".form");
-      const contentLabelEl = document.querySelector(".content-label");
-      const contentFieldEl = document.querySelector(".content");
-      const closeDialogButtonEl = document.querySelector(".close-button");
-      const submitButtonEl = document.querySelector(".submit-button");
-      const findButtonEl = document.querySelector(".find-button");
       const errorMessageEl = document.querySelector(".error-message");
+      const contentLabelEl = document.querySelector(".content-label");
 
+      // INPUTS
       const titleEl = document.querySelector(".title");
       const dateEl = document.querySelector(".date");
       const contentEl = document.querySelector(".content");
+
+      // BUTTONS
+      const closeDialogButtonEl = document.querySelector(".close-button");
+      const submitButtonEl = document.querySelector(".submit-button");
+      const findButtonEl = document.querySelector(".find-button");
 
       // FUNCTIONS
       function toggleMenu() {
@@ -126,7 +126,7 @@
 
       function onAddButtonClick() {
         contentLabelEl.style.display = "block";
-        contentFieldEl.style.display = "block";
+        contentEl.style.display = "block";
         submitButtonEl.style.display = "block";
         findButtonEl.style.display = "none";
         dialogWindowEl.style.display = "block";
@@ -134,7 +134,7 @@
 
       function onSearchButtonClick() {
         contentLabelEl.style.display = "none";
-        contentFieldEl.style.display = "none";
+        contentEl.style.display = "none";
         submitButtonEl.style.display = "none";
         findButtonEl.style.display = "block";
         dialogWindowEl.style.display = "block";
@@ -158,8 +158,6 @@
 
           return postTitle.includes(searchTitle) || postDate === searchDate;
         });
-
-        console.log("filteredPosts", filteredPosts);
 
         postListEl.innerHTML = "";
 
@@ -208,6 +206,8 @@
             content: contentEl.value,
           });
 
+          localStorage.setItem("posts", JSON.stringify(posts));
+
           renderPostsList(posts);
 
           alert("Formulário enviado com sucesso!");
@@ -219,6 +219,8 @@
 
       function getLastPostIdNumber() {
         const lastPost = posts[posts.length - 1];
+
+        if (!lastPost) return 0;
 
         return parseInt(lastPost.id);
       }
@@ -288,6 +290,9 @@
 
       function deleteById(index) {
         posts.splice(index, 1);
+
+        localStorage.setItem("posts", JSON.stringify(posts));
+
         renderPostsList(posts);
       }
 
