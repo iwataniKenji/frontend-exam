@@ -55,6 +55,8 @@
 
                   <input class="submit-button" type="submit" value="Enviar" />
                 </div>
+
+                <p class="error-message"></p>
               </form>
             </div>
           </div>
@@ -105,6 +107,7 @@
       // DIALOG
       const dialogWindow = document.querySelector(".dialog-window");
       const closeDialogButton = document.querySelector(".close-button");
+      const errorMessageEl = document.querySelector(".error-message");
 
       // FORM
       const form = document.querySelector(".form");
@@ -131,25 +134,56 @@
       function submitForm(event) {
         event.preventDefault();
 
-        const title = document.querySelector(".title").value;
-        const date = document.querySelector(".date").value;
-        const content = document.querySelector(".content").value;
+        const title = document.querySelector(".title");
+        const date = document.querySelector(".date");
+        const content = document.querySelector(".content");
 
-        console.log("date".date);
+        const isValid = doFormValidation(title, date, content);
 
-        posts.push({
-          id: posts.length + 1,
-          title: title,
-          date: date ? new Date(date) : new Date(), // TODO -> substituir por validação
-          content: content,
-        });
+        if (isValid) {
+          posts.push({
+            id: (posts.length + 1).toString(),
+            title: title.value,
+            date: new Date(date.value),
+            content: content.value,
+          });
 
-        renderPostsList(posts);
+          renderPostsList(posts);
 
-        alert("Formulário enviado com sucesso!");
-        form.reset();
+          alert("Formulário enviado com sucesso!");
+          form.reset();
 
-        dialogWindow.style.display = "none";
+          dialogWindow.style.display = "none";
+        }
+      }
+
+      function doFormValidation(titleEl, dateEl, contentEl) {
+        const title = titleEl.value.trim();
+        const date = dateEl.value.trim();
+        const content = contentEl.value.trim();
+
+        if (title === "") {
+          errorMessageEl.textContent = "O título é obrigatório.";
+          return false;
+        } else {
+          errorMessageEl.textContent = "";
+        }
+
+        if (date === "") {
+          errorMessageEl.textContent = "A data é obrigatória.";
+          return false;
+        } else {
+          errorMessageEl.textContent = "";
+        }
+
+        if (content === "") {
+          errorMessageEl.textContent = "O campo 'conteúdo' é obrigatório.";
+          return false;
+        } else {
+          errorMessageEl.textContent = "";
+        }
+
+        return true;
       }
 
       function renderPostsList(posts) {
