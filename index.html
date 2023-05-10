@@ -95,40 +95,36 @@
       ];
 
       // POSTS
-      const postList = document.querySelector(".posts-list");
+      const postListEl = document.querySelector(".posts-list");
 
       // MENU
-      const menu = document.querySelector(".menu");
-      const menuButton = document.querySelector(".menu-button");
-      const menuItems = document.querySelector(".menu-items");
-      const addButton = menuItems.querySelector(".add-button");
-      const searchButton = menuItems.querySelector(".search-button");
+      const menuButtonEl = document.querySelector(".menu-button");
+      const menuItemsEl = document.querySelector(".menu-items");
+      const addButtonEl = menuItemsEl.querySelector(".add-button");
+      const searchButtonEl = menuItemsEl.querySelector(".search-button");
 
       // DIALOG
-      const dialogWindow = document.querySelector(".dialog-window");
-      const closeDialogButton = document.querySelector(".close-button");
+      const dialogWindowEl = document.querySelector(".dialog-window");
+      const formEl = document.querySelector(".form");
+      const closeDialogButtonEl = document.querySelector(".close-button");
       const errorMessageEl = document.querySelector(".error-message");
-
-      // FORM
-      const form = document.querySelector(".form");
 
       // FUNCTIONS
       function toggleMenu() {
-        menuItems.classList.toggle("show");
+        menuItemsEl.classList.toggle("show");
       }
 
       function onAddButtonClick() {
-        console.log("Clicou em addButton");
-        dialogWindow.style.display = "block";
+        dialogWindowEl.style.display = "block";
       }
 
       function onSearchButtonClick() {
-        console.log("Clicou em searchButton");
-        dialogWindow.style.display = "block";
+        console.log("Clicou em searchButtonEl"); // TODO -> implement
+        dialogWindowEl.style.display = "block";
       }
 
       function onDialogClose() {
-        dialogWindow.style.display = "none";
+        dialogWindowEl.style.display = "none";
       }
 
       function submitForm(event) {
@@ -141,8 +137,10 @@
         const isValid = doFormValidation(title, date, content);
 
         if (isValid) {
+          const lastPostId = getLastPostIdNumber() + 1;
+
           posts.push({
-            id: (posts.length + 1).toString(),
+            id: lastPostId.toString(),
             title: title.value,
             date: new Date(date.value),
             content: content.value,
@@ -151,10 +149,16 @@
           renderPostsList(posts);
 
           alert("Formulário enviado com sucesso!");
-          form.reset();
+          formEl.reset();
 
-          dialogWindow.style.display = "none";
+          onDialogClose();
         }
+      }
+
+      function getLastPostIdNumber() {
+        const lastPost = posts[posts.length - 1];
+
+        return parseInt(lastPost.id);
       }
 
       function doFormValidation(titleEl, dateEl, contentEl) {
@@ -187,7 +191,7 @@
       }
 
       function renderPostsList(posts) {
-        postList.innerHTML = "";
+        postListEl.innerHTML = "";
 
         posts.forEach((post) => {
           const postItem = document.createElement("div");
@@ -216,7 +220,7 @@
           );
           postItem.appendChild(deleteButton);
 
-          postList.appendChild(postItem);
+          postListEl.appendChild(postItem);
         });
       }
 
@@ -238,11 +242,11 @@
       renderPostsList(posts);
 
       // EVENT LISTENERS
-      menuButton.addEventListener("click", toggleMenu);
-      addButton.addEventListener("click", onAddButtonClick);
-      searchButton.addEventListener("click", onSearchButtonClick);
-      closeDialogButton.addEventListener("click", onDialogClose);
-      form.addEventListener("submit", submitForm);
+      menuButtonEl.addEventListener("click", toggleMenu);
+      addButtonEl.addEventListener("click", onAddButtonClick);
+      searchButtonEl.addEventListener("click", onSearchButtonClick);
+      closeDialogButtonEl.addEventListener("click", onDialogClose);
+      formEl.addEventListener("submit", submitForm);
     </script>
   </body>
 </html>
